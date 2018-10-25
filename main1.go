@@ -1,34 +1,39 @@
 package main
 
 import (
-  "fmt"
-  "github.com/Tehsmash/go-sandbox/common-store"
+	"fmt"
+	"github.com/Tehsmash/go-sandbox/common-store"
+	"time"
 )
 
 type Thing1 struct {
-  egg string
+	egg string
 }
 
-type Thing2 struct {
-  chicken int
+func addfunc() common_store.ThingToStore {
+	return Thing1{"hello"}
 }
 
-func thing1func() common_store.ThingToStore {
-  return Thing1{"hello"}
-}
-
-func thing2func() common_store.ThingToStore {
-  return Thing2{50}
+func removefunc(thing common_store.ThingToStore) {
+	thingcorrect := thing.(Thing1)
+	fmt.Println("Removed ", thingcorrect.egg)
 }
 
 func main() {
-  common_store.Store(thing1func, "thing1")
-  common_store.Store(thing2func, "thing2")
+	store := common_store.NewCommonStore(addfunc, removefunc)
+	store.AddThingToStore("shoe")
+	store.AddThingToStore("eggs")
+	store.AddThingToStore("cheese")
 
-  thingback := common_store.Retrieve("thing1").(Thing1)
-  thingback2 := common_store.Retrieve("thing2").(Thing2)
+	time.Sleep(5 * time.Second)
 
-  fmt.Println(thingback)
-  fmt.Println(thingback.egg)
-  fmt.Println(thingback2.chicken)
+	fmt.Println(store.Retrieve("shoe"))
+	fmt.Println(store.RetrieveAll())
+
+	store.RemoveThingFromStore("shoe")
+
+	time.Sleep(6 * time.Second)
+
+	fmt.Println(store.Retrieve("shoe"))
+	fmt.Println(store.RetrieveAll())
 }
